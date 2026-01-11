@@ -1,0 +1,419 @@
+repeat task.wait() until game:IsLoaded()
+
+if syn and syn.queue_on_teleport then
+    syn.queue_on_teleport([[
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Escape-Tsunami-For-Brainrots!-YYHUB-FREE-TOP-FUNCTIONAL-NO-KEY-NO-LAG-83902"))()
+    ]])
+elseif queue_on_teleport then
+    queue_on_teleport([[
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Escape-Tsunami-For-Brainrots!-YYHUB-FREE-TOP-FUNCTIONAL-NO-KEY-NO-LAG-83902"))()
+    ]])
+end
+
+pcall(function()
+    if isfolder("WindUI") then
+        delfolder("WindUI")
+    end
+end)
+
+local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/refs/heads/main/dist/main.lua"))()
+
+local Window = WindUI:CreateWindow({
+    Title = "YY HUB 🌟 v1.1",
+    Author = "by YY | Escape Tsunami",
+    Folder = "YYHUB",
+    Icon = "crown"
+})
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local upgradeBaseEnabled = false
+local upgradeSpeedEnabled = false
+local collectMoneyEnabled = false
+local autoRebirthEnabled = false
+
+local UpgradeBase = ReplicatedStorage:WaitForChild("RemoteFunctions"):WaitForChild("UpgradeBase")
+local UpgradeSpeed = ReplicatedStorage:WaitForChild("RemoteFunctions"):WaitForChild("UpgradeSpeed")
+local CollectMoney = ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("CollectMoney")
+local Rebirth = ReplicatedStorage:WaitForChild("RemoteFunctions"):WaitForChild("Rebirth")
+
+local MainTab = Window:Tab({Title = "MAIN / ГЛАВНОЕ", Icon = "zap"})
+
+local upgradeSec = MainTab:Section({Title = "UPGRADES / УЛУЧШЕНИЯ"})
+
+upgradeSec:Toggle({
+    Title = "⚡ UPGRADE BASE / УЛУЧШЕНИЕ БАЗЫ",
+    Description = "Автоматически улучшает базу каждые 0.5 секунд",
+    Default = false,
+    Callback = function(state)
+        upgradeBaseEnabled = state
+        WindUI:Notify({
+            Title = "YY HUB v1.1 🌟", 
+            Content = state and "Улучшение базы ВКЛ / Upgrade base ON" 
+                    or "Улучшение базы ВЫКЛ / Upgrade base OFF", 
+            Duration = 4
+        })
+    end
+})
+
+upgradeSec:Toggle({
+    Title = "🏃 UPGRADE SPEED / УЛУЧШЕНИЕ СКОРОСТИ",
+    Description = "Автоматически улучшает скорость (уровень 10) каждые 0.5 секунд",
+    Default = false,
+    Callback = function(state)
+        upgradeSpeedEnabled = state
+        WindUI:Notify({
+            Title = "YY HUB v1.1 🌟", 
+            Content = state and "Улучшение скорости ВКЛ / Upgrade speed ON" 
+                    or "Улучшение скорости ВЫКЛ / Upgrade speed OFF", 
+            Duration = 4
+        })
+    end
+})
+
+upgradeSec:Toggle({
+    Title = "🔄 AUTO REBIRTH / АВТО РЕБИТ",
+    Description = "Автоматически делает ребит каждые 0.5 секунд",
+    Default = false,
+    Callback = function(state)
+        autoRebirthEnabled = state
+        WindUI:Notify({
+            Title = "YY HUB v1.1 🌟", 
+            Content = state and "Авто ребит ВКЛ / Auto rebirth ON" 
+                    or "Авто ребит ВЫКЛ / Auto rebirth OFF", 
+            Duration = 4
+        })
+    end
+})
+
+local utilSec = MainTab:Section({Title = "UTILITIES / УТИЛИТЫ"})
+
+utilSec:Toggle({
+    Title = "💰 AUTO COLLECT MONEY / АВТО СБОР ДЕНЕГ",
+    Description = "Автоматически собирает деньги со слотов 1-30 каждые 0.1 секунд",
+    Default = false,
+    Callback = function(state)
+        collectMoneyEnabled = state
+        WindUI:Notify({
+            Title = "YY HUB v1.1 🌟", 
+            Content = state and "Авто сбор денег ВКЛ / Auto collect money ON" 
+                    or "Авто сбор денег ВЫКЛ / Auto collect money OFF", 
+            Duration = 4
+        })
+    end
+})
+
+utilSec:Button({
+    Title = "🌊 DELETE TSUNAMIS / УДАЛИТЬ ЦУНАМИ",
+    Description = "Нажмите чтобы удалить все цунами (без возврата)",
+    Color = Color3.fromRGB(255, 50, 50),
+    Callback = function()
+        local tsunamis = Workspace:FindFirstChild("ActiveTsunamis")
+        if tsunamis then
+            for _, child in ipairs(tsunamis:GetChildren()) do
+                child:Destroy()
+            end
+            tsunamis:Destroy()
+            WindUI:Notify({
+                Title = "YY HUB v1.1 🌟", 
+                Content = "Все цунами удалены / All tsunamis deleted", 
+                Duration = 4
+            })
+        end
+    end
+})
+
+utilSec:Button({
+    Title = "🚪 UNLOCK VIP DOORS / ОТКРЫТЬ VIP ДВЕРИ",
+    Description = "Удаляет VIP стены и открывает доступ",
+    Color = Color3.fromRGB(0, 200, 100),
+    Callback = function()
+        local vipWalls = Workspace:FindFirstChild("VIPWalls")
+        if vipWalls then
+            vipWalls:Destroy()
+            WindUI:Notify({
+                Title = "YY HUB v1.1 🌟", 
+                Content = "VIP двери открыты / VIP doors unlocked", 
+                Duration = 4
+            })
+        end
+    end
+})
+
+utilSec:Button({
+    Title = "🏠 TP BASE / ТЕЛЕПОРТ БАЗА",
+    Description = "Телепортирует на крышу SpeedShop",
+    Color = Color3.fromRGB(150, 100, 255),
+    Callback = function()
+        local speedShop = Workspace:FindFirstChild("SpeedShop")
+        if speedShop then
+            local roof = speedShop:FindFirstChild("Roof")
+            if roof then
+                local character = LocalPlayer.Character
+                if character then
+                    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                    if humanoidRootPart then
+                        humanoidRootPart.CFrame = CFrame.new(roof.Position + Vector3.new(0, 5, 0))
+                        WindUI:Notify({
+                            Title = "YY HUB v1.1 🌟", 
+                            Content = "Телепортирован на базу / Teleported to base", 
+                            Duration = 4
+                        })
+                    end
+                end
+            end
+        end
+    end
+})
+
+utilSec:Button({
+    Title = "🐰 MULTI JUMP / МУЛЬТИ-ПРЫЖОК",
+    Description = "Загружает мульти-прыжок",
+    Color = Color3.fromRGB(100, 200, 255),
+    Callback = function()
+        WindUI:Notify({
+            Title = "YY HUB v1.1 🌟", 
+            Content = "Загрузка Multi Jump... / Loading Multi Jump...", 
+            Duration = 3
+        })
+        
+        local success, error = pcall(function()
+            local UserInputService = game:GetService("UserInputService")
+            local Players = game:GetService("Players")
+            local LocalPlayer = Players.LocalPlayer
+            
+            local maxJumps = 10
+            local currentJumps = 0
+            local canJump = true
+            
+            local function onJumpRequest()
+                if canJump and currentJumps < maxJumps and LocalPlayer.Character then
+                    local humanoid = LocalPlayer.Character:FindFirstChild("Humanoid")
+                    if humanoid and humanoid:GetState() == Enum.HumanoidStateType.Freefall then
+                        humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                        currentJumps = currentJumps + 1
+                        canJump = false
+                        task.wait(0.1)
+                        canJump = true
+                    end
+                end
+            end
+            
+            UserInputService.JumpRequest:Connect(onJumpRequest)
+            
+            if LocalPlayer.Character then
+                LocalPlayer.Character:WaitForChild("Humanoid").StateChanged:Connect(function(oldState, newState)
+                    if newState == Enum.HumanoidStateType.Landed then
+                        currentJumps = 0
+                    end
+                end)
+            end
+            
+            LocalPlayer.CharacterAdded:Connect(function(character)
+                character:WaitForChild("Humanoid").StateChanged:Connect(function(oldState, newState)
+                    if newState == Enum.HumanoidStateType.Landed then
+                        currentJumps = 0
+                    end
+                end)
+            end)
+            
+            WindUI:Notify({
+                Title = "YY HUB v1.1 🌟", 
+                Content = "Multi Jump активирован! / Multi Jump activated!", 
+                Duration = 4
+            })
+        end)
+        
+        if success then
+            WindUI:Notify({
+                Title = "YY HUB v1.1 🌟", 
+                Content = "Multi Jump загружен успешно! / Multi Jump loaded successfully!", 
+                Duration = 5
+            })
+        end
+    end
+})
+
+utilSec:Button({
+    Title = "🎮 EASY MODE / ЛЕГКИЙ РЕЖИМ",
+    Description = "Создает большую платформу и удаляет цунами",
+    Color = Color3.fromRGB(100, 255, 100),
+    Callback = function()
+        WindUI:Notify({
+            Title = "YY HUB v1.1 🌟", 
+            Content = "Активация Easy Mode... / Activating Easy Mode...", 
+            Duration = 3
+        })
+        
+        local success, error = pcall(function()
+            local floors = Workspace:FindFirstChild("Floors")
+            if floors then
+                local mythical = floors:FindFirstChild("Mythical")
+                if mythical then
+                    mythical.Size = Vector3.new(2048, 7, 694.20)
+                end
+            end
+            
+            local tsunamis = Workspace:FindFirstChild("ActiveTsunamis")
+            if tsunamis then
+                tsunamis:Destroy()
+            end
+            
+            WindUI:Notify({
+                Title = "YY HUB v1.1 🌟", 
+                Content = "Easy Mode активирован! / Easy Mode activated!", 
+                Duration = 5
+            })
+        end)
+        
+        if not success then
+            WindUI:Notify({
+                Title = "YY HUB v1.1 🌟", 
+                Content = "Ошибка активации Easy Mode / Error activating Easy Mode", 
+                Duration = 5
+            })
+        end
+    end
+})
+
+local AdminTab = Window:Tab({Title = "ADMIN PANEL / АДМИН ПАНЕЛЬ", Icon = "shield"})
+
+local adminSec = AdminTab:Section({Title = "ADMIN COMMANDS / АДМИН КОМАНДЫ"})
+
+adminSec:Button({
+    Title = "⚡ INFINITE YIELD / ИНФИНИТ ЙИЛД",
+    Description = "Загружает Infinite Yield Admin Commands",
+    Color = Color3.fromRGB(255, 100, 100),
+    Callback = function()
+        WindUI:Notify({
+            Title = "YY HUB v1.1 🌟", 
+            Content = "Загрузка Infinite Yield... / Loading Infinite Yield...", 
+            Duration = 3
+        })
+        
+        local success, error = pcall(function()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+        end)
+        
+        if success then
+            WindUI:Notify({
+                Title = "YY HUB v1.1 🌟", 
+                Content = "Infinite Yield успешно запущен! / Infinite Yield launched successfully!", 
+                Duration = 6
+            })
+        end
+    end
+})
+
+adminSec:Button({
+    Title = "🔍 DEX EXPLORER / ДЕКС ЭКСПЛОРЕР",
+    Description = "Загружает Dex Explorer для анализа игры",
+    Color = Color3.fromRGB(255, 150, 50),
+    Callback = function()
+        WindUI:Notify({
+            Title = "YY HUB v1.1 🌟", 
+            Content = "Загрузка Dex Explorer... / Loading Dex Explorer...", 
+            Duration = 3
+        })
+        
+        local success, error = pcall(function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/peyton2465/Dex/master/out.lua"))()
+        end)
+        
+        if success then
+            WindUI:Notify({
+                Title = "YY HUB v1.1 🌟", 
+                Content = "Dex Explorer успешно запущен! / Dex Explorer launched successfully!", 
+                Duration = 5
+            })
+        end
+    end
+})
+
+local SupportTab = Window:Tab({Title = "SUPPORT / ПОДДЕРЖКА", Icon = "message-square"})
+
+local supSec = SupportTab:Section({Title = "CONTACT / СВЯЗАТЬСЯ"})
+
+supSec:Button({
+    Title = "📱 TELEGRAM @BOSSKlNG",
+    Icon = "send",
+    Color = Color3.fromRGB(0,150,255),
+    Callback = function()
+        if setclipboard then
+            setclipboard("@BOSSKlNG")
+            WindUI:Notify({
+                Title = "YY HUB v1.1 🌟", 
+                Content = "Телеграм скопирован / Telegram copied", 
+                Duration = 4
+            })
+        end
+    end
+})
+
+supSec:Button({
+    Title = "💖 SUPPORT THE AUTHOR / ПОДДЕРЖАТЬ АВТОРА",
+    Icon = "heart",
+    Color = Color3.fromRGB(255, 50, 150),
+    Callback = function()
+        if setclipboard then
+            setclipboard("https://go.linkify.ru/2F7S")
+            WindUI:Notify({
+                Title = "YY HUB v1.1 🌟", 
+                Content = "Ссылка для поддержки скопирована / Support link copied", 
+                Duration = 4
+            })
+        end
+    end
+})
+
+spawn(function()
+    while task.wait(0.5) do
+        if upgradeBaseEnabled then
+            pcall(function()
+                UpgradeBase:InvokeServer()
+            end)
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait(0.5) do
+        if upgradeSpeedEnabled then
+            pcall(function()
+                UpgradeSpeed:InvokeServer(10)
+            end)
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait(0.5) do
+        if autoRebirthEnabled then
+            pcall(function()
+                Rebirth:InvokeServer()
+            end)
+        end
+    end
+end)
+
+spawn(function()
+    while task.wait(0.1) do
+        if collectMoneyEnabled then
+            pcall(function()
+                for slot = 1, 30 do
+                    CollectMoney:FireServer("Slot" .. slot)
+                    task.wait(0.01)
+                end
+            end)
+        end
+    end
+end)
+
+WindUI:Notify({
+    Title = "YY HUB v1.1 🌟", 
+    Content = "Хаб загружен успешно! Версия 1.1 / Hub loaded successfully! Version 1.1", 
+    Duration = 6
+})
